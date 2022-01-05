@@ -30,234 +30,283 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
 
   bool loadOtpPage = false;
 
-  bool isAValidOTP = false;
+  bool showOTPError = false;
 
   bool showPhoneNumberError = false;
 
   String otpString = "";
 
+
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
-        resizeToAvoidBottomInset : false,
-        backgroundColor: Colors.white,
-        body: !loadOtpPage?Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 40,),
-            Container(
-              width: MediaQuery.of(context).size.width*0.8,
-              height: 2,
-              color: Colors.grey,
-              child: Row(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width/10,
-                    color: Color(0xff24224D),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width/2,
-                    color: Colors.grey,
-                  ),
-                ],
-              ),
+    return WillPopScope(child: SafeArea(child: Scaffold(
+      resizeToAvoidBottomInset : false,
+      backgroundColor: Colors.white,
+      body: !loadOtpPage?Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(height: 40,),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20))
             ),
-            SizedBox(height: MediaQuery.of(context).size.height/8,),
-            Padding(padding: EdgeInsets.only(right:80,top: 30),child: Text(
-              'My number is',
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.headline4,
-                fontSize: 40,
-                color: Color(0xff24224D),
-                fontWeight: FontWeight.w700,
-              ),
-            )),
-            SizedBox(height: MediaQuery.of(context).size.height/8,),
-            Padding(padding: EdgeInsets.all(30),child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey.withOpacity(0.5),
+            width: MediaQuery.of(context).size.width*0.8,
+            height: 4,
+            child: Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width/10,
+                  decoration: BoxDecoration(
+                      color: Color(0xff24224D),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(10))
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(10),
-                child: InternationalPhoneNumberInput(
-
-                      textStyle:GoogleFonts.roboto(
-                      textStyle: Theme.of(context).textTheme.button,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    spaceBetweenSelectorAndTextField: 0,
-
-                    inputDecoration: InputDecoration(
-                    border: InputBorder.none,
-                    errorText: showPhoneNumberError?"Please Enter a Valid Phone Number":null,
-                    hintText: 'Phone Number',
-                    hintStyle: GoogleFonts.roboto(
-                      textStyle: Theme.of(context).textTheme.button,
-                      color: Colors.grey,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  onInputChanged: (PhoneNumber number) {
-                    phoneNumberString = number.phoneNumber.toString();
-                    print(number.phoneNumber.toString());
-                  },
-                  onInputValidated: (bool value) {
-                    print(value);
-                    isAValidPhoneNumber = value;
-                    showPhoneNumberError=!isAValidPhoneNumber;
-                    setState(() {
-
-                    });
-
-                  },
-                  selectorConfig: SelectorConfig(
-                    selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                    leadingPadding: 0.0,
-                  ),
-                  ignoreBlank: false,
-                  autoValidateMode: AutovalidateMode.disabled,
-                  selectorTextStyle: TextStyle(color: Colors.black),
-                  initialValue: number,
-                  textFieldController: controller,
-                  formatInput: false,
-                  autoFocus: true,
-                  keyboardType:
-                  TextInputType.numberWithOptions(signed: true, decimal: true),
-                  inputBorder: null,
-                  onSaved: (PhoneNumber number) {
-                    print('On Saved: $number');
-                  },
                 ),
-              ),
-            ),),
-            Container(
-              width: MediaQuery.of(context).size.width*0.85,
-              child: OutlinedButton(
-                onPressed: () async {
-                  if(isAValidPhoneNumber){
-                    await phoneSignIn( phoneNumber: phoneNumberString);
-                  }
-                  else{
-                    showPhoneNumberError=true;
-                  }
-                  },
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))),
+                Container(
+                  width: MediaQuery.of(context).size.width/2,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
                 ),
-                child:Padding(padding: EdgeInsets.all(25),child:Text("Continue",style: GoogleFonts.roboto(
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height/8,),
+          Padding(padding: EdgeInsets.only(right:80,top: 30),child: Text(
+            'My number is',
+            style: GoogleFonts.roboto(
+              textStyle: Theme.of(context).textTheme.headline4,
+              fontSize: 40,
+              color: Color(0xff24224D),
+              fontWeight: FontWeight.w700,
+            ),
+          )),
+          SizedBox(height: MediaQuery.of(context).size.height/8,),
+          Padding(padding: EdgeInsets.all(30),child: Container(
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.5),
+                ),
+                borderRadius: BorderRadius.all(Radius.circular(10))
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: InternationalPhoneNumberInput(
+                textStyle:GoogleFonts.roboto(
                   textStyle: Theme.of(context).textTheme.button,
                   color: Colors.grey,
                   fontWeight: FontWeight.w400,
-                ),)),
-              ),
-            )
-          ],
-        ):Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 40,),
-            Container(
-              width: MediaQuery.of(context).size.width*0.8,
-              height: 2,
-              color: Colors.grey,
-              child: Row(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width/10,
-                    color: Color(0xff24224D),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width/2,
+                ),
+                spaceBetweenSelectorAndTextField: 0,
+
+                inputDecoration: InputDecoration(
+                  border: InputBorder.none,
+                  errorText: showPhoneNumberError?"Please Enter a Valid Phone Number":null,
+                  hintText: 'Phone Number',
+                  hintStyle: GoogleFonts.roboto(
+                    textStyle: Theme.of(context).textTheme.button,
                     color: Colors.grey,
+                    fontWeight: FontWeight.w400,
                   ),
-                ],
+                ),
+                onInputChanged: (PhoneNumber number) {
+                  phoneNumberString = number.phoneNumber.toString();
+                  showPhoneNumberError=false;
+                  setState(() {
+
+                  });
+                  print(number.phoneNumber.toString());
+                },
+                onInputValidated: (bool value) {
+                  print(value);
+                  isAValidPhoneNumber = value;
+                  showPhoneNumberError=!isAValidPhoneNumber;
+                  setState(() {
+
+                  });
+
+                },
+                selectorConfig: SelectorConfig(
+                  selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                  leadingPadding: 0.0,
+                ),
+                ignoreBlank: false,
+                autoValidateMode: AutovalidateMode.disabled,
+                selectorTextStyle: TextStyle(color: Colors.black),
+                initialValue: number,
+                textFieldController: controller,
+                formatInput: false,
+                autoFocus: true,
+                keyboardType:
+                TextInputType.numberWithOptions(signed: true, decimal: true),
+                inputBorder: null,
+                onSaved: (PhoneNumber number) {
+                  print('On Saved: $number');
+                },
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height/8,),
-            Padding(padding: EdgeInsets.only(left: 30,top: 30),child: Text(
-              'Verification Code is',
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.headline4,
-                fontSize: 48,
-                color: Color(0xff24224D),
-                fontWeight: FontWeight.w700,
-              ),
-            )),
-            Padding(padding: EdgeInsets.only(left: 30),child: Text(
-              'Enter the code we\'ve sent to $phoneNumberString',
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.headline4,
-                fontSize: 20,
-                color: Color(0xff24224D),
-                fontWeight: FontWeight.w300,
-              ),
-            )),
-            Padding(padding: EdgeInsets.only(left: 30,right: 30,top: 30,bottom: 10),child: OtpTextField(
-              numberOfFields: 6,
-              borderColor: Color(0xFF512DA8),
-              //set to true to show as box or false to show as dash
-              showFieldAsBox: true,
-              borderRadius: BorderRadius.circular(10),
-              fieldWidth: 50,
-              textStyle: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.headline4,
-                fontSize: 22,
-                color: Color(0xff24224D),
-                fontWeight: FontWeight.w700,
-              ),
-              //runs when a code is typed in
-              onCodeChanged: (String code) {
-                //handle validation or checks here
-                if(code.length==6){
-                  if(otpString == code){
-                    isAValidOTP = true;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => Questions()),
-                    );
-                  }
+          ),),
+          Container(
+            width: MediaQuery.of(context).size.width*0.85,
+            child: OutlinedButton(
+              onPressed: () async {
+                if(isAValidPhoneNumber){
+                  await phoneSignIn( phoneNumber: phoneNumberString);
+                }
+                else{
+                  showPhoneNumberError=true;
+                  setState(() {
 
+                  });
                 }
               },
-              //runs when every textfield is filled
-              onSubmit: (String verificationCode){
-                if(otpString == verificationCode){
+              style: ButtonStyle(
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0))),
+              ),
+              child:Padding(padding: EdgeInsets.all(25),child:Text("Continue",style: GoogleFonts.roboto(
+                textStyle: Theme.of(context).textTheme.button,
+                color: Colors.grey,
+                fontWeight: FontWeight.w400,
+              ),)),
+            ),
+          )
+        ],
+      ):Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(height: 40,),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20))
+            ),
+            width: MediaQuery.of(context).size.width*0.8,
+            height: 4,
+            child: Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width/10,
+                  decoration: BoxDecoration(
+                      color: Color(0xff24224D),
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width/2,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(20))
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height/8,),
+          Padding(padding: EdgeInsets.only(left: 30,top: 30),child: Text(
+            'Verify your number',
+            style: GoogleFonts.roboto(
+              textStyle: Theme.of(context).textTheme.headline4,
+              fontSize: 48,
+              color: Color(0xff24224D),
+              fontWeight: FontWeight.w700,
+            ),
+          )),
+          Padding(padding: EdgeInsets.only(left: 30),child: Text(
+            'Enter the code we\'ve sent to $phoneNumberString',
+            style: GoogleFonts.roboto(
+              textStyle: Theme.of(context).textTheme.headline4,
+              fontSize: 20,
+              color: Color(0xff24224D),
+              fontWeight: FontWeight.w300,
+            ),
+          )),
+          Padding(padding: EdgeInsets.only(left: 30,right: 30,top: 30,bottom: 10),child: OtpTextField(
+            numberOfFields: 6,
+            borderColor: Color(0xFF512DA8),
+            //set to true to show as box or false to show as dash
+            showFieldAsBox: true,
+            borderRadius: BorderRadius.circular(10),
+            fieldWidth: 50,
+            textStyle: GoogleFonts.roboto(
+              textStyle: Theme.of(context).textTheme.headline4,
+              fontSize: 22,
+              color: Color(0xff24224D),
+              fontWeight: FontWeight.w700,
+            ),
+            //runs when a code is typed in
+            onCodeChanged: (String code) {
+              //handle validation or checks here
+              if(code.length==6){
+                if(otpString == code){
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Questions()),
                   );
                 }
-              }, // end onSubmit
-            ),),
-            Visibility(visible: isAValidOTP,child: Text(
-              isAValidOTP?'Wrong OTP':'Correct OTP',
-              style: GoogleFonts.roboto(
-                textStyle: Theme.of(context).textTheme.headline4,
-                fontSize: 20,
-                color: isAValidOTP?Colors.redAccent:Colors.green,
-                fontWeight: FontWeight.w700,
-              ),
-            ),),
-            SizedBox(height: 40,),
-            TextButton(onPressed: () async {
-                await phoneSignIn(phoneNumber: phoneNumberString);
-              }, child: Text(
-              'Code Not Recieved ?',
-              style: GoogleFonts.roboto(
-                decoration: TextDecoration.underline,
-                textStyle: Theme.of(context).textTheme.headline4,
-                fontSize: 20,
-                color: Color(0xff24224D),
-                fontWeight: FontWeight.w300,
-              ),
-            ),)
-          ],
-        ),
-    ));
+                else{
+                  print("Wrong OTP");
+                  showOTPError =true;
+                  setState(() {
+
+                  });
+                }
+              }else{
+                showOTPError =false;
+                setState(() {
+
+                });
+              }
+            },
+            //runs when every textfield is filled
+            onSubmit: (String verificationCode){
+              if(otpString == verificationCode){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Questions()),
+                );
+              }
+              else{
+                print("Wrong OTP");
+                showOTPError =true;
+                setState(() {
+
+                });
+              }
+            }, // end onSubmit
+          ),),
+          Visibility(visible: showOTPError,child: Text(
+            showOTPError?'Wrong OTP':'Correct OTP',
+            style: GoogleFonts.roboto(
+              textStyle: Theme.of(context).textTheme.headline4,
+              fontSize: 20,
+              color: showOTPError?Colors.redAccent:Colors.green,
+              fontWeight: FontWeight.w700,
+            ),
+          ),),
+          SizedBox(height: 40,),
+          TextButton(onPressed: () async {
+            await phoneSignIn(phoneNumber: phoneNumberString);
+          }, child: Text(
+            'Code Not Recieved ?',
+            style: GoogleFonts.roboto(
+              decoration: TextDecoration.underline,
+              textStyle: Theme.of(context).textTheme.headline4,
+              fontSize: 20,
+              color: Color(0xff24224D),
+              fontWeight: FontWeight.w300,
+            ),
+          ),)
+        ],
+      ),
+    )), onWillPop: () async {
+      loadOtpPage = false;
+      setState(() {
+
+      });
+      return Future.value(false);
+    });
   }
 
   Future<void> phoneSignIn({required String phoneNumber}) async {

@@ -28,7 +28,6 @@ class _QuestionsState extends State<Questions> {
 
   int user_id = 1;
 
-
   // Create an instance variable.
   late final Future? myFuture;
 
@@ -36,7 +35,9 @@ class _QuestionsState extends State<Questions> {
   void initState() {
     super.initState();
     User? user = FirebaseAuth.instance.currentUser;
-    user_id= user!.uid as int;
+    if(user!=null){
+      user_id= user.uid as int;
+    }
     // Assign that variable your Future.
     myFuture = getData();
   }
@@ -82,27 +83,30 @@ class _QuestionsState extends State<Questions> {
                                 text: "/$noOfTotalQuestions",
                                 style: GoogleFonts.roboto(
                                   textStyle: Theme.of(context).textTheme.headline4,
-                                  fontSize: 24,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w300,
                                   color: Colors.grey,
                                 ),
                               )]),
                       )),
                       backgroundColor: Colors.white,
                       elevation: 0.0,
-                      leading: Padding(padding: EdgeInsets.only(left: 40,top: 30),child:Icon(Icons.arrow_back_ios)),
+                      leading: Padding(padding: EdgeInsets.only(left: 40,top: 30),child:IconButton(
+                        icon: Icon(Icons.arrow_back_ios),onPressed: (){Navigator.pop(context);},
+                      )),
                         toolbarHeight: 190.0,
                   )),
                   body: Center(
                   child:Column(
                   children: [
-                    Container(
+                    Padding(padding: EdgeInsets.all(20),child: Container(
                         alignment: Alignment.topCenter,
                         margin: EdgeInsets.all(20),
                         child: LinearProgressIndicator(
                           value: ((noOfCompletedQuestions - 0) / (noOfTotalQuestions - 0)+0),
-                          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xff24224D)),
+                          valueColor: new AlwaysStoppedAnimation<Color>(Color(0xff9FFAE8)),
                         )
-                    ),
+                    )),
                     Padding(padding: EdgeInsets.all(30),child: RichText(
                       text: TextSpan(
                           text: valueMap["data"][noOfCompletedQuestions]["sub_heading"]??"" + " ",
@@ -114,7 +118,7 @@ class _QuestionsState extends State<Questions> {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text: valueMap["data"][noOfCompletedQuestions]["question"],
+                              text: " "+valueMap["data"][noOfCompletedQuestions]["question"]??"",
                               style: GoogleFonts.roboto(
                                 textStyle: Theme.of(context).textTheme.headline4,
                                 fontSize: 36,
@@ -123,7 +127,7 @@ class _QuestionsState extends State<Questions> {
                               ),
                             )]),
                     ),),
-                    Padding(padding: EdgeInsets.only(left: 30,right: 30),child: ListView.separated(
+                    Expanded(child: Padding(padding: EdgeInsets.only(left: 30,right: 30),child: ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
@@ -132,6 +136,33 @@ class _QuestionsState extends State<Questions> {
                       itemBuilder: (BuildContext context, int index) {
                         return OutlinedButton(
                           style: ButtonStyle(
+                            overlayColor: MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Color(0xff9FFAE8);
+                                if (states.contains(MaterialState.selected))
+                                  return Color(0xff9FFAE8);
+                                return Color(0xffDEDEE4); // Use the component's default.
+                              },
+                            ),
+                            shadowColor: MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Color(0xff9FFAE8);
+                                if (states.contains(MaterialState.selected))
+                                  return Color(0xff9FFAE8);
+                                return Color(0xffDEDEE4); // Use the component's default.
+                              },
+                            ) ,
+                            foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                                  (Set<MaterialState> states) {
+                                if (states.contains(MaterialState.pressed))
+                                  return Color(0xff9FFAE8);
+                                if (states.contains(MaterialState.selected))
+                                  return Color(0xff9FFAE8);
+                                return Color(0xffDEDEE4); // Use the component's default.
+                              },
+                            ),
                             backgroundColor: MaterialStateProperty.resolveWith<Color>(
                                   (Set<MaterialState> states) {
                                 if (states.contains(MaterialState.pressed))
@@ -150,11 +181,13 @@ class _QuestionsState extends State<Questions> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(child:Text(options[index],style: GoogleFonts.roboto(
-                                textStyle: Theme.of(context).textTheme.headline4,
-                                fontSize: 20,
-                                color: Color(0xff24224D),
-                                fontWeight: FontWeight.w300
-                            ),) ,padding: EdgeInsets.only(left: 20,top: 20,bottom: 20),),
+                              textStyle: Theme.of(context).textTheme.headline4,
+                              fontSize: 20,
+                              color: Color(0xff24224D),
+                              fontWeight:customFontWieght(),
+                              //fontWeight: FontWeight.w700,
+                            ),) ,
+                              padding: EdgeInsets.only(left: 20,top: 20,bottom: 20),),
                           ),
                           onPressed: () {
                             //Add Answer to Map
@@ -164,7 +197,7 @@ class _QuestionsState extends State<Questions> {
                           },
                         );
                       },
-                    ),)
+                    ),))
                   ],
                 )))
               );
@@ -210,7 +243,6 @@ class _QuestionsState extends State<Questions> {
     else{
       questionarrieCompleted = true;
       setState(() {});
-
     }
     print(answers);
     setState(() {});
@@ -224,5 +256,15 @@ class _QuestionsState extends State<Questions> {
       print(response.reasonPhrase);
     }
 
+  }
+
+  FontWeight? customFontWieght() {
+    MaterialStateProperty.resolveWith<FontWeight>((Set<MaterialState> states) {
+      if (states.contains(MaterialState.pressed))
+        return FontWeight.w900;
+      if (states.contains(MaterialState.selected))
+        return FontWeight.w900;
+      return FontWeight.w300; // Use the component's default.
+    });
   }
 }
