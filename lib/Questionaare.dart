@@ -1,4 +1,6 @@
 // ignore: file_names
+// ignore_for_file: file_names
+
 import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -118,7 +120,7 @@ class _QuestionsState extends State<Questions> {
                           ),
                           children: <TextSpan>[
                             TextSpan(
-                              text: " "+valueMap["data"][noOfCompletedQuestions]["question"]??"",
+                              text: " "+valueMap["data"][noOfCompletedQuestions]["question"],
                               style: GoogleFonts.roboto(
                                 textStyle: Theme.of(context).textTheme.headline4,
                                 fontSize: 36,
